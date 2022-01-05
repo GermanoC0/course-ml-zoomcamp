@@ -1,0 +1,45 @@
+Go to course-zoomcamp/05-deployment/code
+- docker build -t churn-model:v001 .
+
+Test
+docker run -it --rm -p 9696:9696 churn-model:v001
+From another terminal python predict-test.py
+
+
+Question 3
+sudo TMPDIR=/home/germano/Documents/10-kubernetes/Homework /home/germano/bin/kind load docker-image churn-model:v001
+
+
+Question 4
+containers:
+      - name: churn
+        image: churn-model:v001
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 9696
+        
+        
+Question 5
+churn-6db5b449f4-q8n4x
+
+Question 6
+apiVersion: v1
+kind: Service
+metadata:
+  name: churn
+spec:
+  type: LoadBalancer
+  selector:
+    app: churn
+  ports:
+  - port: 80
+    targetPort: 9696
+
+
+
+sudo /home/germano/bin/kubectl port-forward service/churn 9696:80
+
+
